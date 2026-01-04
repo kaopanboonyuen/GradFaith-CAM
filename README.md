@@ -1,13 +1,31 @@
-# GradFaith-CAM 🔍🔥  
-### *Seeing Isn’t Always Believing: Faithfulness Analysis of Grad-CAM in Lung Cancer CT Classification*
+# GradCAM-Faith  
+**Seeing Isn’t Always Believing: Evaluating Grad-CAM Faithfulness in Lung Cancer CT Classification**
 
 <p align="center">
-  <img src="img/main_arch.png" width="85%">
+  <strong>Author:</strong> Teerapong Panboonyuen &nbsp;•&nbsp;
+  <em>Accepted at 18th International Conference on Knowledge and Smart Technology (KST 2026)</em>
 </p>
 
 <p align="center">
-  <b>KST 2026 · 18th International Conference on Knowledge and Smart Technology</b><br>
-  Pattaya, Thailand · January 21–24, 2026
+  <a href="https://kst.buu.ac.th">
+    <img src="https://img.shields.io/badge/Conference-KST%202026-blue.svg" alt="Conference">
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/Paper-Accepted-success.svg" alt="Paper">
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/Domain-Medical%20Imaging-red.svg" alt="Domain">
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/XAI-Grad--CAM%20Faithfulness-orange.svg" alt="XAI">
+  </a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/License-Research%20Only-lightgrey.svg" alt="License">
+  </a>
+</p>
+
+<p align="center">
+  <img src="img/GradCAM_Faith_MAIN.png" width="90%">
 </p>
 
 ---
