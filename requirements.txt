@@ -1,0 +1,58 @@
+# ================================
+# Core Deep Learning (Paper Base)
+# ================================
+torch==2.1.2
+torchvision==0.16.2
+torchaudio==2.1.2
+
+# ================================
+# Vision Models (ResNet, DenseNet, EfficientNet, ViT)
+# ================================
+timm==0.9.12
+
+# ================================
+# Scientific Computing
+# ================================
+numpy==1.26.3
+scipy==1.11.4
+
+# ================================
+# Medical Image Processing
+# ================================
+opencv-python==4.9.0.80
+Pillow==10.2.0
+
+# ================================
+# Data Handling & Utilities
+# ================================
+pandas==2.1.4
+tqdm==4.66.1
+PyYAML==6.0.1
+
+# ================================
+# Metrics & Evaluation
+# ================================
+scikit-learn==1.3.2
+
+# ================================
+# Visualization (Figures, Grad-CAM)
+# ================================
+matplotlib==3.8.2
+seaborn==0.13.1
+
+# ================================
+# Explainability / Grad-CAM Support
+# ================================
+einops==0.7.0
+
+# ================================
+# Experiment Reproducibility
+# ================================
+omegaconf==2.3.0
+hydra-core==1.3.2
+
+# ================================
+# Jupyter / Demo Notebook
+# ================================
+jupyterlab==4.0.9
+ipykernel==6.27.1
