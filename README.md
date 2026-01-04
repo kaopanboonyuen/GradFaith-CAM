@@ -2,7 +2,7 @@
 ### *Seeing Isn’t Always Believing: Faithfulness Analysis of Grad-CAM in Lung Cancer CT Classification*
 
 <p align="center">
-  <img src="results/figures/teaser.png" width="85%">
+  <img src="img/main_arch.png" width="85%">
 </p>
 
 <p align="center">
@@ -108,7 +108,7 @@ Together, these metrics answer a critical question:
 ## 🖼️ Visual Examples
 
 <p align="center">
-  <img src="results/figures/gradcam_comparison.png" width="100%">
+  <img src="img/gradcam_comparison.png" width="100%">
 </p>
 
 ---
