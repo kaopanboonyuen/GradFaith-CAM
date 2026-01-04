@@ -1,4 +1,4 @@
-# GradCAM-Faith  
+# GradFaith-CAM
 **Seeing Isn’t Always Believing: Evaluating Grad-CAM Faithfulness in Lung Cancer CT Classification**
 
 <p align="center">
