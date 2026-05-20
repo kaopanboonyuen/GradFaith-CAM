@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GradFaith-CAM | Seeing Isn't Always Believing</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍄</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg2: #f8f7f4;
+    --bg3: #f0ede6;
+    --text: #1a1814;
+    --text2: #4a4640;
+    --text3: #8a8480;
+    --accent: #c84b2f;
+    --accent2: #e8623f;
+    --accent-pale: #fdf0ed;
+    --blue: #1a4fa0;
+    --blue-pale: #eef3fc;
+    --green: #1a6b3a;
+    --green-pale: #edf7f1;
+    --border: rgba(0,0,0,0.08);
+    --border2: rgba(0,0,0,0.14);
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'DM Sans', system-ui, sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,0.10);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    font-size: 16px;
+    overflow-x: hidden;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    width: 0%; z-index: 1000;
+    transition: width 0.1s linear;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.08); }
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+  .nav-links a {
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text2);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 130px 2rem 80px;
+    max-width: 860px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 0.78rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-pale);
+    padding: 6px 16px; border-radius: 100px;
+    border: 1px solid rgba(200,75,47,0.15);
+    margin-bottom: 1.5rem;
+    opacity: 0; animation: fadeUp 0.7s 0.1s forwards;
+  }
+  .hero-eyebrow::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); display: inline-block;
+  }
+
+  h1.hero-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.18;
+    letter-spacing: -0.025em;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+    opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+  }
+  h1.hero-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-subtitle {
+    font-size: 1.05rem;
+    color: var(--text2);
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    font-weight: 300;
+    opacity: 0; animation: fadeUp 0.8s 0.35s forwards;
+  }
+
+  .hero-meta {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1rem;
+    font-size: 0.88rem; color: var(--text2);
+    margin-bottom: 2rem;
+    opacity: 0; animation: fadeUp 0.8s 0.45s forwards;
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+  .hero-meta .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text3); }
+
+  .badge-row {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    margin-bottom: 2.5rem;
+    opacity: 0; animation: fadeUp 0.8s 0.55s forwards;
+  }
+  .badge {
+    font-size: 0.75rem; font-weight: 500;
+    padding: 5px 14px; border-radius: 100px;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    background: var(--bg);
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .badge:hover { background: var(--bg2); }
+  .badge.blue { background: var(--blue-pale); color: var(--blue); border-color: rgba(26,79,160,0.2); }
+  .badge.green { background: var(--green-pale); color: var(--green); border-color: rgba(26,107,58,0.2); }
+  .badge.red { background: var(--accent-pale); color: var(--accent); border-color: rgba(200,75,47,0.2); }
+
+  .btn-row {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+    margin-bottom: 3rem;
+    opacity: 0; animation: fadeUp 0.8s 0.6s forwards;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 24px; border-radius: var(--radius-sm);
+    font-size: 0.9rem; font-weight: 500; text-decoration: none;
+    transition: all 0.2s; cursor: pointer;
+  }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+    border: 1.5px solid var(--accent);
+  }
+  .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200,75,47,0.3); }
+  .btn-outline {
+    background: transparent; color: var(--text);
+    border: 1.5px solid var(--border2);
+  }
+  .btn-outline:hover { background: var(--bg2); transform: translateY(-1px); }
+
+  /* ── HERO IMAGE ── */
+  .hero-img-wrap {
+    position: relative; margin: 0 auto;
+    max-width: 820px;
+    opacity: 0; animation: fadeUp 0.9s 0.7s forwards;
+  }
+  .hero-img-wrap::before {
+    content: '';
+    position: absolute; inset: -16px -16px -0px;
+    background: linear-gradient(135deg, #fdf0ed 0%, #f0ede6 50%, #eef3fc 100%);
+    border-radius: 20px; z-index: -1;
+  }
+  .hero-img-wrap img {
+    width: 100%; border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    display: block;
+  }
+  .img-caption {
+    font-size: 0.78rem; color: var(--text3);
+    margin-top: 0.75rem; font-style: italic;
+  }
+
+  /* ── SECTION ── */
+  section { padding: 80px 2rem; }
+  .container { max-width: 860px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; max-width: 40px; height: 1px;
+    background: var(--accent); opacity: 0.4;
+  }
+  h2.section-title {
+    font-family: var(--serif);
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    line-height: 1.25; letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 1.2rem;
+  }
+  .section-lead {
+    font-size: 1rem; color: var(--text2);
+    max-width: 620px; margin-bottom: 2rem;
+    font-weight: 300; line-height: 1.8;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    max-width: 860px; margin: 0 auto;
+    border: none; border-top: 1px solid var(--border);
+  }
+
+  /* ── MOTIVATION QUOTE ── */
+  .quote-block {
+    background: var(--bg2);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    padding: 1.5rem 2rem;
+    margin: 2rem 0;
+  }
+  .quote-block p {
+    font-family: var(--serif);
+    font-size: 1.2rem; font-style: italic;
+    line-height: 1.55; color: var(--text);
+  }
+
+  /* ── CONTRIBUTIONS GRID ── */
+  .contrib-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px; margin-top: 1.5rem;
+  }
+  .contrib-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    position: relative; overflow: hidden;
+    transition: all 0.3s;
+  }
+  .contrib-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+    border-color: var(--border2);
+  }
+  .contrib-card::before {
+    content: attr(data-num);
+    position: absolute; top: -8px; right: 16px;
+    font-family: var(--serif); font-size: 4.5rem;
+    color: var(--accent); opacity: 0.07;
+    line-height: 1; pointer-events: none;
+  }
+  .contrib-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--accent-pale);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+  .contrib-card h3 {
+    font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem;
+  }
+  .contrib-card p { font-size: 0.85rem; color: var(--text2); line-height: 1.6; }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin: 2rem 0;
+  }
+  .stat-box {
+    background: var(--bg);
+    padding: 1.75rem; text-align: center;
+  }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2.4rem; line-height: 1;
+    color: var(--text); margin-bottom: 0.3rem;
+  }
+  .stat-label { font-size: 0.8rem; color: var(--text3); letter-spacing: 0.04em; }
+
+  /* ── MODEL TABLE ── */
+  .model-table-wrap {
+    overflow-x: auto; margin: 1.5rem 0;
+    border: 1px solid var(--border); border-radius: var(--radius);
+  }
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  thead { background: var(--bg2); }
+  th {
+    padding: 12px 20px; text-align: left;
+    font-weight: 600; font-size: 0.78rem;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--text2); border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 13px 20px; border-bottom: 1px solid var(--border);
+    color: var(--text2);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--bg2); }
+  .type-badge {
+    display: inline-block;
+    font-size: 0.72rem; font-weight: 600;
+    padding: 3px 10px; border-radius: 100px;
+    letter-spacing: 0.04em;
+  }
+  .type-cnn { background: var(--blue-pale); color: var(--blue); }
+  .type-vit { background: var(--accent-pale); color: var(--accent); }
+
+  /* ── METRICS ── */
+  .metrics-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin: 2rem 0;
+  }
+  .metric-card {
+    background: var(--bg2);
+    border-radius: var(--radius); padding: 1.5rem;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .metric-card:hover { background: var(--bg3); transform: translateY(-2px); }
+  .metric-num {
+    font-family: var(--serif); font-size: 2rem;
+    color: var(--accent); margin-bottom: 0.2rem;
+  }
+  .metric-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .metric-card p { font-size: 0.82rem; color: var(--text3); line-height: 1.55; }
+
+  /* ── FINDINGS ── */
+  .finding-list { list-style: none; margin: 1.5rem 0; }
+  .finding-list li {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+  }
+  .finding-list li:last-child { border-bottom: none; }
+  .finding-num {
+    flex-shrink: 0;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-size: 0.75rem; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 2px;
+  }
+  .finding-list li p { font-size: 0.92rem; color: var(--text2); line-height: 1.65; }
+  .finding-list li strong { color: var(--text); }
+
+  /* ── GALLERY ── */
+  .gallery-wrap {
+    background: var(--bg2);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  .gallery-wrap img {
+    width: 100%; border-radius: var(--radius-sm);
+    display: block;
+    box-shadow: var(--shadow);
+  }
+
+  /* ── CODE BLOCKS ── */
+  .code-section { background: var(--bg2); border-radius: var(--radius); overflow: hidden; margin: 1.5rem 0; }
+  .code-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.78rem; font-weight: 500; color: var(--text2);
+  }
+  .code-dots { display: flex; gap: 6px; }
+  .code-dots span { width: 10px; height: 10px; border-radius: 50%; }
+  .code-dots .d1 { background: #f5645a; }
+  .code-dots .d2 { background: #f6b843; }
+  .code-dots .d3 { background: #49be25; }
+  pre {
+    font-family: var(--mono);
+    font-size: 0.83rem; line-height: 1.7;
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto; color: var(--text2);
+    background: none; margin: 0;
+  }
+  .cmd { color: #c84b2f; }
+  .flag { color: #1a4fa0; }
+  .str { color: #1a6b3a; }
+  .copy-btn {
+    font-size: 0.72rem; color: var(--text3);
+    background: none; border: 1px solid var(--border2);
+    padding: 4px 10px; border-radius: 4px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .copy-btn:hover { color: var(--text); background: var(--bg); }
+
+  /* ── CITATION ── */
+  .citation-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 1.5rem 0;
+  }
+  .citation-box pre {
+    font-size: 0.82rem; color: var(--text2);
+  }
+
+  /* ── WARNING CALLOUT ── */
+  .callout {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: #fff8f0; border: 1px solid rgba(200,75,47,0.2);
+    border-radius: var(--radius-sm); padding: 1rem 1.25rem;
+    font-size: 0.88rem; color: var(--text2);
+    margin: 1.5rem 0;
+  }
+  .callout-icon { font-size: 1rem; margin-top: 1px; }
+
+  /* ── TEAM ── */
+  .team-card {
+    display: flex; gap: 20px; align-items: center;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+    margin: 1.5rem 0;
+    transition: all 0.3s;
+  }
+  .team-card:hover { box-shadow: var(--shadow); border-color: var(--border2); }
+  .team-avatar {
+    width: 56px; height: 56px; border-radius: 50%;
+    background: var(--accent-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--serif); font-size: 1.4rem;
+    color: var(--accent); flex-shrink: 0;
+  }
+  .team-name { font-weight: 600; font-size: 1rem; margin-bottom: 2px; }
+  .team-role { font-size: 0.83rem; color: var(--text3); margin-bottom: 0.4rem; }
+  .team-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .team-tag {
+    font-size: 0.72rem; padding: 3px 10px; border-radius: 100px;
+    background: var(--blue-pale); color: var(--blue);
+    border: 1px solid rgba(26,79,160,0.15);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--text);
+    color: rgba(255,255,255,0.5);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  footer .footer-logo {
+    font-family: var(--serif);
+    font-size: 1.5rem; color: #fff;
+    margin-bottom: 0.5rem;
+  }
+  footer .footer-sub { font-size: 0.82rem; line-height: 1.7; margin-bottom: 1.5rem; }
+  footer .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 2rem; }
+  footer .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 0.82rem; }
+  footer .footer-links a:hover { color: #fff; }
+  footer .footer-copy { font-size: 0.75rem; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── FLOATING ACCENT ── */
+  .hero::before {
+    content: '';
+    position: absolute;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(200,75,47,0.06) 0%, transparent 70%);
+    top: 60px; right: -100px; pointer-events: none;
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(26,79,160,0.05) 0%, transparent 70%);
+    bottom: 0; left: -80px; pointer-events: none;
+    border-radius: 50%;
+  }
+
+  /* ── ANIMATED COUNTER ── */
+  .counter { display: inline-block; }
+
+  /* ── SECTION BG ALTERNATES ── */
+  section.bg2 { background: var(--bg2); }
+  section.bg3 { background: var(--bg3); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .stats-row, .metrics-grid { grid-template-columns: 1fr 1fr; }
+    .metrics-grid { grid-template-columns: 1fr; }
+    .contrib-grid { grid-template-columns: 1fr; }
+    h1.hero-title { font-size: 1.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">GradFaith-CAM</a>
+  <ul class="nav-links">
+    <li><a href="#motivation">Motivation</a></li>
+    <li><a href="#method">Method</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#code">Code</a></li>
+    <li><a href="#citation">Citation</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">KST 2026 · Accepted Paper</div>
+
+  <h1 class="hero-title">
+    <em>Seeing Isn't Always Believing:</em><br>
+    Evaluating Grad-CAM Faithfulness<br>in Lung Cancer CT Classification
+  </h1>
+
+  <p class="hero-subtitle">
+    A rigorous, quantitative evaluation of Grad-CAM faithfulness and localization reliability
+    across modern deep learning architectures.
+  </p>
+
+  <div class="hero-meta">
+    <span>Teerapong Panboonyuen</span>
+    <span class="dot"></span>
+    <span>Chulalongkorn University</span>
+    <span class="dot"></span>
+    <span>MARSAIL Lab</span>
+    <span class="dot"></span>
+    <span>KST 2026</span>
+  </div>
+
+  <div class="badge-row">
+    <a href="https://kst.buu.ac.th" target="_blank" class="badge blue">Conference · KST 2026</a>
+    <span class="badge green">Paper · Accepted</span>
+    <span class="badge red">Medical Imaging</span>
+    <span class="badge">XAI · Grad-CAM</span>
+    <span class="badge">CT Classification</span>
+  </div>
+
+  <div class="btn-row">
+    <a href="#" class="btn btn-primary">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Read Paper
+    </a>
+    <a href="#code" class="btn btn-outline">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      View Code
+    </a>
+    <a href="#citation" class="btn btn-outline">
+      <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>
+      Cite
+    </a>
+  </div>
+
+  <div class="hero-img-wrap reveal">
+    <img src="img/GradCAM_Faith_MAIN.png" alt="GradFaith-CAM main figure showing Grad-CAM heatmaps across architectures">
+    <p class="img-caption">Fig. 1 — Grad-CAM activation maps across CNN and Vision Transformer architectures on lung CT scans.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- MOTIVATION -->
+<section id="motivation" class="container" style="max-width:860px;margin:0 auto;padding:80px 2rem;">
+  <div class="section-label reveal">01 · Motivation</div>
+  <h2 class="section-title reveal">Why faithfulness matters<br>in medical AI</h2>
+  <p class="section-lead reveal">
+    Grad-CAM has become the de facto explainability tool for medical image analysis.
+    But a critical question remains unanswered.
+  </p>
+
+  <div class="quote-block reveal">
+    <p>Do Grad-CAM heatmaps truly reflect the model's reasoning — or are we just seeing convincing illusions?</p>
+  </div>
+
+  <p class="reveal" style="font-size:0.95rem;color:var(--text2);line-height:1.8;margin-bottom:1.5rem;">
+    This paper provides the first rigorous, quantitative evaluation of Grad-CAM faithfulness
+    and localization reliability across modern deep learning architectures for lung cancer CT classification.
+    We demonstrate that high accuracy does not imply trustworthy explanation — and that blind trust
+    in saliency maps can be clinically dangerous.
+  </p>
+
+  <div class="callout reveal">
+    <span class="callout-icon">⚠️</span>
+    <span><strong>Medical AI does not fail loudly — it fails <em>convincingly</em>.</strong> This work shows why explainability must be quantitative, model-aware, and clinically grounded.</span>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CONTRIBUTIONS -->
+<section id="contributions" class="bg2" style="padding:80px 2rem;">
+  <div class="container">
+    <div class="section-label reveal">02 · Key Contributions</div>
+    <h2 class="section-title reveal">Five core advances</h2>
+
+    <div class="contrib-grid">
+      <div class="contrib-card reveal" data-num="1">
+        <div class="contrib-icon">🎯</div>
+        <h3>Faithfulness-Aware Evaluation</h3>
+        <p>First framework that quantitatively measures whether Grad-CAM highlights truly drive model decisions in CT lung cancer classification.</p>
+      </div>
+      <div class="contrib-card reveal" data-num="2">
+        <div class="contrib-icon">🔀</div>
+        <h3>Cross-Architecture Analysis</h3>
+        <p>Systematic comparison across CNNs (ResNet, DenseNet, EfficientNet) and Vision Transformers — revealing fundamentally different failure modes.</p>
+      </div>
+      <div class="contrib-card reveal" data-num="3">
+        <div class="contrib-icon">📐</div>
+        <h3>Quantitative Explanation Metrics</h3>
+        <p>Novel evaluation metrics that go beyond visual inspection — enabling objective comparison of explanation quality.</p>
+      </div>
+      <div class="contrib-card reveal" data-num="4">
+        <div class="contrib-icon">🚨</div>
+        <h3>Shortcut Learning Exposure</h3>
+        <p>Evidence of shortcut learning in DenseNet — models that appear to explain correctly while relying on spurious correlations.</p>
+      </div>
+      <div class="contrib-card reveal" data-num="5">
+        <div class="contrib-icon">🏥</div>
+        <h3>Clinical Implications</h3>
+        <p>Practical guidelines for deploying trustworthy medical AI systems where explainability must meet clinical standards.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- DATASET -->
+<section id="dataset" style="padding:80px 2rem;">
+  <div class="container">
+    <div class="section-label reveal">03 · Dataset</div>
+    <h2 class="section-title reveal">IQ-OTH/NCCD Lung Cancer CT Dataset</h2>
+    <p class="section-lead reveal">Publicly available, ethically approved, expert-annotated by radiologists and oncologists.</p>
+
+    <div class="stats-row reveal">
+      <div class="stat-box">
+        <div class="stat-num counter" data-target="1190">0</div>
+        <div class="stat-label">CT Slices</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num counter" data-target="110">0</div>
+        <div class="stat-label">Patients</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Classes</div>
+      </div>
+    </div>
+
+    <div class="model-table-wrap reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Description</th>
+            <th>Annotation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Normal</strong></td>
+            <td>No abnormal findings in CT scan</td>
+            <td>Radiologist verified</td>
+          </tr>
+          <tr>
+            <td><strong>Benign</strong></td>
+            <td>Non-cancerous pulmonary nodule present</td>
+            <td>Oncologist annotated</td>
+          </tr>
+          <tr>
+            <td><strong>Malignant</strong></td>
+            <td>Cancerous tissue identified</td>
+            <td>Multi-expert consensus</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout reveal" style="border-color:rgba(26,79,160,0.2);background:#f0f6ff;">
+      <span class="callout-icon">🔒</span>
+      <span>All data are de-identified and ethically approved. No patient-identifiable information is included in this repository.</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- MODELS -->
+<section id="models" class="bg2" style="padding:80px 2rem;">
+  <div class="container">
+    <div class="section-label reveal">04 · Models Evaluated</div>
+    <h2 class="section-title reveal">Five architectures, two paradigms</h2>
+    <p class="section-lead reveal">From classical convolutional networks to attention-based Vision Transformers.</p>
+
+    <div class="model-table-wrap reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>Architecture</th>
+            <th>Type</th>
+            <th>Parameters</th>
+            <th>Mechanism</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ResNet-50</strong></td>
+            <td><span class="type-badge type-cnn">CNN</span></td>
+            <td>25.6M</td>
+            <td>Residual connections</td>
+          </tr>
+          <tr>
+            <td><strong>ResNet-101</strong></td>
+            <td><span class="type-badge type-cnn">CNN</span></td>
+            <td>44.5M</td>
+            <td>Deep residual blocks</td>
+          </tr>
+          <tr>
+            <td><strong>DenseNet-161</strong></td>
+            <td><span class="type-badge type-cnn">CNN</span></td>
+            <td>28.7M</td>
+            <td>Dense skip connections</td>
+          </tr>
+          <tr>
+            <td><strong>EfficientNet-B0</strong></td>
+            <td><span class="type-badge type-cnn">CNN</span></td>
+            <td>5.3M</td>
+            <td>Compound scaling</td>
+          </tr>
+          <tr>
+            <td><strong>ViT-Base-Patch16-224</strong></td>
+            <td><span class="type-badge type-vit">Transformer</span></td>
+            <td>86M</td>
+            <td>Self-attention over patches</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- METHOD -->
+<section id="method" style="padding:80px 2rem;">
+  <div class="container">
+    <div class="section-label reveal">05 · Method</div>
+    <h2 class="section-title reveal">GradFaith-CAM: beyond pretty heatmaps</h2>
+    <p class="section-lead reveal">
+      Three complementary faithfulness metrics that together answer: does the highlighted region
+      actually matter for the prediction?
+    </p>
+
+    <div class="metrics-grid reveal">
+      <div class="metric-card">
+        <div class="metric-num">01</div>
+        <h3>Localization Accuracy</h3>
+        <p>Measures spatial overlap between Grad-CAM activation maps and ground-truth tumor regions annotated by radiologists.</p>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">02</div>
+        <h3>Perturbation-Based Faithfulness</h3>
+        <p>Quantifies drop in model confidence when highlighted regions are occluded — a faithful map should cause a significant confidence drop.</p>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">03</div>
+        <h3>Explanation Consistency</h3>
+        <p>Evaluates stability of activation patterns across random seeds and model re-initializations to measure explanation robustness.</p>
+      </div>
+    </div>
+
+    <div class="quote-block reveal" style="margin-top:2rem;">
+      <p>Interpretability without faithfulness is just another illusion.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- RESULTS -->
+<section id="results" class="bg2" style="padding:80px 2rem;">
+  <div class="container">
+    <div class="section-label reveal">06 · Key Findings</div>
+    <h2 class="section-title reveal">Grad-CAM is NOT uniformly reliable</h2>
+    <p class="section-lead reveal">
+      Our quantitative evaluation reveals systematic failures in saliency-based explanation
+      across all tested architectures.
+    </p>
+
+    <ul class="finding-list">
+      <li class="reveal">
+        <div class="finding-num">1</div>
+        <div><p><strong>CNNs produce coarse or misleading attention.</strong> ResNet and EfficientNet frequently highlight background tissue rather than tumor regions, despite achieving high classification accuracy on the test set.</p></div>
+      </li>
+      <li class="reveal">
+        <div class="finding-num">2</div>
+        <div><p><strong>DenseNet shows signs of shortcut learning.</strong> Dense skip connections create activation pathways that bypass clinically relevant features, producing saliency maps that appear plausible but fail perturbation tests.</p></div>
+      </li>
+      <li class="reveal">
+        <div class="finding-num">3</div>
+        <div><p><strong>ViT provides precise but sometimes non-faithful localization.</strong> Vision Transformers achieve better spatial precision in heatmaps, but attention-to-Grad-CAM translation introduces faithfulness gaps not present in pure attention visualization.</p></div>
+      </li>
+      <li class="reveal">
+        <div class="finding-num">4</div>
+        <div><p><strong>High accuracy does not equal trustworthy explanation.</strong> Models achieving >90% accuracy demonstrated some of the lowest faithfulness scores — reinforcing that classification performance is a poor proxy for explanation quality.</p></div>
+      </li>
+    </ul>
+
+    <div class="gallery-wrap reveal">
+      <img src="img/gradcam_comparison.png" alt="Grad-CAM comparison across architectures showing varying localization quality on lung CT scans">
+      <p style="font-size:0.78rem;color:var(--text3);margin-top:0.75rem;font-style:italic;text-align:center;">
+        Fig. 2 — Grad-CAM activation maps across all evaluated architectures. Note the significant variation in localization precision and faithfulness.
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CODE -->
+<section id="code" style="padding:80px 2rem;">
+  <div class="container">
+    <div class="section-label reveal">07 · Code</div>
+    <h2 class="section-title reveal">Reproduce our experiments</h2>
+    <p class="section-lead reveal">All code, configs, and pretrained checkpoints are available in the repository.</p>
+
+    <div class="code-section reveal">
+      <div class="code-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <span>Installation</span>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this,'install')">Copy</button>
+      </div>
+      <pre id="install"><span class="cmd">git</span> clone https://github.com/yourusername/GradFaith-CAM.git
+<span class="cmd">cd</span> GradFaith-CAM
+<span class="cmd">pip</span> install <span class="flag">-r</span> requirements.txt</pre>
+    </div>
+
+    <div class="code-section reveal">
+      <div class="code-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <span>Train a model</span>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this,'train')">Copy</button>
+      </div>
+      <pre id="train"><span class="cmd">python</span> experiments/train.py <span class="flag">--config</span> <span class="str">configs/resnet.yaml</span></pre>
+    </div>
+
+    <div class="code-section reveal">
+      <div class="code-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <span>Evaluate Grad-CAM faithfulness</span>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this,'eval')">Copy</button>
+      </div>
+      <pre id="eval"><span class="cmd">python</span> experiments/evaluate.py <span class="flag">--model</span> <span class="str">resnet50</span></pre>
+    </div>
+
+    <div class="code-section reveal">
+      <div class="code-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <span>Visualize explanations</span>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this,'viz')">Copy</button>
+      </div>
+      <pre id="viz"><span class="cmd">python</span> experiments/visualize.py <span class="flag">--image</span> <span class="str">sample.png</span></pre>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CITATION -->
+<section id="citation" class="bg2" style="padding:80px 2rem;">
+  <div class="container">
+    <div class="section-label reveal">08 · Citation</div>
+    <h2 class="section-title reveal">Cite this work</h2>
+    <p class="section-lead reveal">If you use this code or findings in your research, please cite:</p>
+
+    <div class="citation-box reveal">
+      <div class="code-header">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div class="code-dots"><span class="d1"></span><span class="d2"></span><span class="d3"></span></div>
+          <span>BibTeX</span>
+        </div>
+        <button class="copy-btn" onclick="copyCode(this,'bibtex')">Copy</button>
+      </div>
+      <pre id="bibtex"><span class="flag">@inproceedings</span>{panboonyuen2026gradfaithcam,
+  <span class="str">title</span>     = {Seeing Isn't Always Believing: Analysis of Grad-CAM
+               Faithfulness and Localization Reliability in Lung
+               Cancer CT Classification},
+  <span class="str">author</span>    = {Panboonyuen, Teerapong},
+  <span class="str">booktitle</span> = {Proceedings of the 18th International Conference on
+               Knowledge and Smart Technology (KST)},
+  <span class="str">year</span>      = {2026}
+}</pre>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TEAM -->
+<section id="team" style="padding:80px 2rem;">
+  <div class="container">
+    <div class="section-label reveal">09 · Author</div>
+    <h2 class="section-title reveal">About the researcher</h2>
+
+    <div class="team-card reveal">
+      <div class="team-avatar">TP</div>
+      <div>
+        <div class="team-name">Teerapong Panboonyuen</div>
+        <div class="team-role">Chulalongkorn University · MARSAIL Laboratory</div>
+        <div class="team-tags">
+          <span class="team-tag">Medical Imaging</span>
+          <span class="team-tag">Explainable AI</span>
+          <span class="team-tag">Deep Learning</span>
+          <span class="team-tag">Computer Vision</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="reveal" style="font-size:0.88rem;color:var(--text3);margin-top:1rem;line-height:1.7;">
+      This research was conducted at <strong>Chulalongkorn University</strong> and
+      <strong>MARSAIL (Motor AI Recognition Solution Artificial Intelligence Laboratory)</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">GradFaith-CAM 🍄</div>
+  <p class="footer-sub">
+    Seeing Isn't Always Believing: Evaluating Grad-CAM Faithfulness in Lung Cancer CT Classification<br>
+    Accepted · 18th International Conference on Knowledge and Smart Technology (KST 2026)
+  </p>
+  <div class="footer-links">
+    <a href="#">Paper</a>
+    <a href="#">Code</a>
+    <a href="#citation">BibTeX</a>
+    <a href="https://kst.buu.ac.th" target="_blank">KST 2026</a>
+    <a href="#motivation">Motivation</a>
+    <a href="#results">Results</a>
+  </div>
+  <p class="footer-copy">© 2026 Teerapong Panboonyuen · Chulalongkorn University · MARSAIL Lab · Research Only</p>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const pct = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+    document.getElementById('progress-bar').style.width = pct + '%';
+    const nav = document.getElementById('navbar');
+    nav.classList.toggle('scrolled', doc.scrollTop > 20);
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => io.observe(el));
+
+  // Animated counters
+  function animateCounter(el) {
+    const target = +el.dataset.target;
+    const duration = 1600;
+    const start = performance.now();
+    function step(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.floor(ease * target).toLocaleString();
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  const counterIO = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target); counterIO.unobserve(e.target); } });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.counter').forEach(el => counterIO.observe(el));
+
+  // Copy to clipboard
+  function copyCode(btn, id) {
+    const text = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copied!';
+      setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+  }
+</script>
+</body>
+</html>
